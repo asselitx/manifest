@@ -35,50 +35,50 @@ We'll implement the tool in several incremental phases to get some basic functio
  
 Based on Tim's feedback, instead of using `<xsdl:include/>` as originally proposed, change it so that it can be used to either include _all_ the scripts in the referenced file:
 
-	<Binding>
-		<Definition>
-			<Script>
-				<Transforms>
-					<EspRequest>
-						<xsdl:include-from file="service-scripts.xml"/>
-						<!-- 
-							By default all the transforms defined in service-scripts.xml
-							are included here in this element
-						-->
-					</EspRequest>
-				</Transforms>
-			</Script>
-		</Definition>	
-	</Binding>
+  <Binding>
+    <Definition>
+      <Script>
+        <Transforms>
+          <EspRequest>
+            <xsdl:include file="service-scripts.xml"/>
+		<!-- 
+			By default all the transforms defined in service-scripts.xml
+			are included here in this element
+		-->
+          </EspRequest>
+        </Transforms>
+      </Script>
+    </Definition>	
+  </Binding>
 
 or just include some by name:
 
-	<Binding>
-		<Definition>
-			<Script>
-				<Transforms>
-					<EspRequest>
- 					  <xsdl:include file="service-scripts.xml" transform="GenericOutOfBand"/>
- 					  <xsdl:include file="service-scripts.xml" transform="UserOutOfBand"/>
-					</EspRequest>
-				</Transforms>
-			</Script>
-		</Definition>	
-	</Binding>
+  <Binding>
+    <Definition>
+      <Script>
+        <Transforms>
+          <EspRequest>
+            <xsdl:include file="service-scripts.xml" transform="GenericOutOfBand"/>
+            <xsdl:include file="service-scripts.xml" transform="UserOutOfBand"/>
+          </EspRequest>
+        </Transforms>
+      </Script>
+    </Definition>	
+  </Binding>
 
 or as a list of names:
 
-	<Binding>
-		<Definition>
-			<Script>
-				<Transforms>
-					<EspRequest>
- 					  <xsdl:include file="service-scripts.xml" transforms="GenericOutOfBand,UserOutOfBand"/>
-					</EspRequest>
-				</Transforms>
-			</Script>
-		</Definition>	
-	</Binding>
+  <Binding>
+    <Definition>
+      <Script>
+        <Transforms>
+          <EspRequest>
+            <xsdl:include file="service-scripts.xml" transforms="GenericOutOfBand,UserOutOfBand"/>
+          </EspRequest>
+        </Transforms>
+      </Script>
+    </Definition>	
+  </Binding>
 
 This way you can organize scripts in 'shared' files where different subsets of transforms are used by a wide variety of different bindings. Also you can put all the transforms you'd need for a given service or method in a single file and automatically include 
 
