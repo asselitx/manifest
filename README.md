@@ -40,10 +40,10 @@ Based on Tim's feedback, instead of using `<xsdl:include/>` as originally propos
 			<Script>
 				<Transforms>
 					<xsdl:EspRequest>
-						<xsdl:include-from file="service-scripts.xml" all="true"/>
+						<xsdl:include-from file="service-scripts.xml"/>
 						<!-- 
-								All the transforms defined in service-scripts.xml
-								are included here in this element
+							By default all the transforms defined in service-scripts.xml
+							are included here in this element
 						-->
 					</xsdl:EspRequest>
 				</Transforms>
@@ -58,10 +58,8 @@ or just include some by name:
 			<Script>
 				<Transforms>
 					<xsdl:EspRequest>
-						<xsdl:include-from file="service-scripts.xml" all="false">
-							<xsdl:include transform="GenericOutOfBand"/>
-							<xsdl:include transform="UserOutOfBand"/>
-						</xsdl:include-from>
+ 					  <xsdl:include file="service-scripts.xml" transform="GenericOutOfBand"/>
+ 					  <xsdl:include file="service-scripts.xml" transform="UserOutOfBand"/>
 					</xsdl:EspRequest>
 				</Transforms>
 			</Script>
