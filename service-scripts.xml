@@ -1,162 +1,160 @@
-<Script>
-	<Transforms>
-		<xsdl:Transform name="GenericOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
-			<xsdl:choose>
-				<xsdl:when test="true()">
-					<xsdl:SetValue target="_ClientIP" value="$espUserPeer"/>
-					<xsdl:SetValue target="_DeliveryMethod" value="&apos;XML&apos;"/>
-					<xsdl:SetValue target="_ESPClientInterfaceVersion" value="$clientversion"/>
-					<xsdl:SetValue target="_ESPMethodName" value="$method"/>
-					<xsdl:SetValue target="_LoginId" value="$espUserName"/>
-				</xsdl:when>
-			</xsdl:choose>
-		</xsdl:Transform>
-		<xsdl:Transform name="UserOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
-			<xsdl:choose>
-				<xsdl:when test="true()">
-					<xsdl:SetValue target="_QueryId" value="//User/QueryId"/>
-					<xsdl:SetValue target="_ReferenceCode" value="//User/ReferenceCode"/>
-				</xsdl:when>
-			</xsdl:choose>
-			<xsdl:choose>
-				<xsdl:otherwise>
-					<xsdl:choose>
-						<xsdl:otherwise>
-							<xsdl:AppendValue target="GLBPurpose" value="&apos;0&apos;"/>
-						</xsdl:otherwise>
-						<xsdl:when test="string-length(normalize-space(//User/GLBPurpose))=0"/>
-					</xsdl:choose>
-				</xsdl:otherwise>
-				<xsdl:when test="contains($glbAllowed, concat(&apos; &apos;, string(number(//User/GLBPurpose)), &apos; &apos;))">
-					<xsdl:AppendValue target="GLBPurpose" value="string(number(//User/GLBPurpose))"/>
-				</xsdl:when>
-			</xsdl:choose>
-			<xsdl:choose>
-				<xsdl:otherwise>
-					<xsdl:choose>
-						<xsdl:otherwise>
-							<xsdl:AppendValue target="DPPAPurpose" value="&apos;0&apos;"/>
-						</xsdl:otherwise>
-						<xsdl:when test="string-length(normalize-space(//User/DLPurpose))=0"/>
-					</xsdl:choose>
-				</xsdl:otherwise>
-				<xsdl:when test="contains($dppaAllowed, concat(&apos; &apos;, string(number(//User/DLPurpose)), &apos; &apos;))">
-					<xsdl:AppendValue target="DPPAPurpose" value="string(number(//User/DLPurpose))"/>
-				</xsdl:when>
-			</xsdl:choose>
-			<xsdl:choose>
-				<xsdl:otherwise>
-					<xsdl:SetValue target="_CompanyId" value="&apos;&apos;"/>
-					<xsdl:SetValue target="ExcludeDMVPII" value="&apos;1&apos;"/>
-					<xsdl:choose>
-						<xsdl:when test="string-length($SSNMask)&gt;0">
-							<xsdl:choose>
-								<xsdl:otherwise>
-									<xsdl:SetValue target="SSNMask" value="$SSNMask"/>
-								</xsdl:otherwise>
-								<xsdl:when test="$fullssn=0">
-									<xsdl:SetValue target="SSNMask" value="&apos;none&apos;"/>
-								</xsdl:when>
-							</xsdl:choose>
-						</xsdl:when>
-					</xsdl:choose>
-				</xsdl:otherwise>
-				<xsdl:when test="$internal_user=1">
-					<xsdl:SetValue target="_CompanyId" value="//User/CompanyId"/>
-					<xsdl:choose>
-						<xsdl:when test="string-length(//User/DataPermissionMask)&gt;0">
-							<xsdl:SetValue target="DataPermissionMask" value="//User/DataPermissionMask"/>
-						</xsdl:when>
-					</xsdl:choose>
-					<xsdl:choose>
-						<xsdl:when test="string-length(//User/DataRestrictionMask)&gt;0">
-							<xsdl:SetValue target="DataRestrictionMask" value="//User/DataRestrictionMask"/>
-						</xsdl:when>
-					</xsdl:choose>
-					<xsdl:choose>
-						<xsdl:when test="string-length(//User/DeathMasterPurpose)&gt;0">
-							<xsdl:SetValue target="DeathMasterPurpose" value="//User/DeathMasterPurpose"/>
-						</xsdl:when>
-					</xsdl:choose>
-					<xsdl:choose>
-						<xsdl:when test="string-length(//User/DLMask)&gt;0">
-							<xsdl:SetValue target="DLMask" value="//User/DLMask"/>
-						</xsdl:when>
-					</xsdl:choose>
-					<xsdl:choose>
-						<xsdl:when test="string-length(//User/DOBMask)&gt;0">
-							<xsdl:SetValue target="DOBMask" value="//User/DOBMask"/>
-						</xsdl:when>
-					</xsdl:choose>
-					<xsdl:choose>
-						<xsdl:when test="string-length(//User/ExcludeDMVPII)&gt;0">
-							<xsdl:SetValue target="ExcludeDMVPII" value="//User/ExcludeDMVPII"/>
-						</xsdl:when>
-					</xsdl:choose>
-					<xsdl:choose>
-						<xsdl:when test="string-length(//User/IndustryClass)&gt;0">
-							<xsdl:SetValue target="IndustryClass" value="//User/IndustryClass"/>
-						</xsdl:when>
-					</xsdl:choose>
-					<xsdl:choose>
-						<xsdl:when test="string-length(//User/SSNMask)&gt;0">
-							<xsdl:SetValue target="SSNMask" value="//User/SSNMask"/>
-						</xsdl:when>
-					</xsdl:choose>
-				</xsdl:when>
-			</xsdl:choose>
-		</xsdl:Transform>
-		<xsdl:Transform name="UserInBand" target="soap:Body/{$query}/{$request}/Row/User" xmlns:xsdl="hpcc-crt">
-			<xsdl:choose>
-				<xsdl:otherwise>
-					<xsdl:choose>
-						<xsdl:otherwise>
-							<xsdl:SetValue target="GLBPurpose" value="&apos;0&apos;"/>
-						</xsdl:otherwise>
-						<xsdl:when test="string-length(normalize-space(//GLBPurpose))=0"/>
-					</xsdl:choose>
-				</xsdl:otherwise>
-				<xsdl:when test="contains($glbAllowed, concat(&apos; &apos;, string(number(//GLBPurpose)), &apos; &apos;))">
-					<xsdl:SetValue target="GLBPurpose" value="string(number(//GLBPurpose))"/>
-				</xsdl:when>
-			</xsdl:choose>
-			<xsdl:choose>
-				<xsdl:otherwise>
-					<xsdl:choose>
-						<xsdl:otherwise>
-							<xsdl:SetValue target="DLPurpose" value="&apos;0&apos;"/>
-						</xsdl:otherwise>
-						<xsdl:when test="string-length(normalize-space(//DLPurpose))=0"/>
-					</xsdl:choose>
-				</xsdl:otherwise>
-				<xsdl:when test="contains($dppaAllowed, concat(&apos; &apos;, string(number(//DLPurpose)), &apos; &apos;))">
-					<xsdl:SetValue target="DLPurpose" value="string(number(//DLPurpose))"/>
-				</xsdl:when>
-			</xsdl:choose>
-		</xsdl:Transform>
-		<xsdl:Transform name="BertErniePlatformOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
-			<xsdl:choose>
-				<xsdl:when test="true()">
-					<xsdl:AppendValue target="LogInfo/ProductId" value="&apos;7&apos;"/>
-					<xsdl:AppendValue target="LogInfo/SubProductId" value="&apos;70014&apos;"/>
-				</xsdl:when>
-			</xsdl:choose>
-		</xsdl:Transform>
-		<xsdl:Transform name="BertErniePlatformInBand" target="soap:Body/{$query}/{$request}/Row" xmlns:xsdl="hpcc-crt">
-			<xsdl:choose>
-				<xsdl:when required="false" test="$internal_user=1">
-					<xsdl:choose>
-						<xsdl:when required="false" test="string-length(ProductCode)=0">
-							<xsdl:AppendValue name="prod_i" optional="false" target="BertErnieUser/ProductCode" value="&apos;10&apos;"/>
-						</xsdl:when>
-					</xsdl:choose>
-				</xsdl:when>
-				<xsdl:otherwise>
-					<xsdl:AppendValue name="gcid_x" optional="false" target="BertErnieUser/GlobalCompanyId" value="$gc_id"/>
-					<xsdl:AppendValue name="prod_x" optional="false" target="BertErnieUser/ProductCode" value="10"/>
-					<xsdl:AppendValue name="industry_x" optional="false" target="BertErnieUser/IndustryTypeName" value="$BERTERNIE_API_PROGRAM"/>
-				</xsdl:otherwise>
-			</xsdl:choose>
-		</xsdl:Transform>
-	</Transforms>
-</Script>
+<es:transforms xmlns:es="urn:hpcc:esdl:script">
+  <es:transform name="GenericOutOfBand" target="soap:Body/{$query}">
+    <es:choose>
+      <es:when test="true()">
+        <es:set-value target="_ClientIP" value="$espUserPeer"/>
+        <es:set-value target="_DeliveryMethod" value="&apos;XML&apos;"/>
+        <es:set-value target="_ESPClientInterfaceVersion" value="$clientversion"/>
+        <es:set-value target="_ESPMethodName" value="$method"/>
+        <es:set-value target="_LoginId" value="$espUserName"/>
+      </es:when>
+    </es:choose>
+  </es:transform>
+  <es:transform name="UserOutOfBand" target="soap:Body/{$query}">
+    <es:choose>
+      <es:when test="true()">
+        <es:set-value target="_QueryId" value="//User/QueryId"/>
+        <es:set-value target="_ReferenceCode" value="//User/ReferenceCode"/>
+      </es:when>
+    </es:choose>
+    <es:choose>
+      <es:otherwise>
+        <es:choose>
+          <es:otherwise>
+            <es:append-to-value target="GLBPurpose" value="&apos;0&apos;"/>
+          </es:otherwise>
+          <es:when test="string-length(normalize-space(//User/GLBPurpose))=0"/>
+        </es:choose>
+      </es:otherwise>
+      <es:when test="contains($glbAllowed, concat(&apos; &apos;, string(number(//User/GLBPurpose)), &apos; &apos;))">
+        <es:append-to-value target="GLBPurpose" value="string(number(//User/GLBPurpose))"/>
+      </es:when>
+    </es:choose>
+    <es:choose>
+      <es:otherwise>
+        <es:choose>
+          <es:otherwise>
+            <es:append-to-value target="DPPAPurpose" value="&apos;0&apos;"/>
+          </es:otherwise>
+          <es:when test="string-length(normalize-space(//User/DLPurpose))=0"/>
+        </es:choose>
+      </es:otherwise>
+      <es:when test="contains($dppaAllowed, concat(&apos; &apos;, string(number(//User/DLPurpose)), &apos; &apos;))">
+        <es:append-to-value target="DPPAPurpose" value="string(number(//User/DLPurpose))"/>
+      </es:when>
+    </es:choose>
+    <es:choose>
+      <es:otherwise>
+        <es:set-value target="_CompanyId" value="&apos;&apos;"/>
+        <es:set-value target="ExcludeDMVPII" value="&apos;1&apos;"/>
+        <es:choose>
+          <es:when test="string-length($SSNMask)&gt;0">
+            <es:choose>
+              <es:otherwise>
+                <es:set-value target="SSNMask" value="$SSNMask"/>
+              </es:otherwise>
+              <es:when test="$fullssn=0">
+                <es:set-value target="SSNMask" value="&apos;none&apos;"/>
+              </es:when>
+            </es:choose>
+          </es:when>
+        </es:choose>
+      </es:otherwise>
+      <es:when test="$internal_user=1">
+        <es:set-value target="_CompanyId" value="//User/CompanyId"/>
+        <es:choose>
+          <es:when test="string-length(//User/DataPermissionMask)&gt;0">
+            <es:set-value target="DataPermissionMask" value="//User/DataPermissionMask"/>
+          </es:when>
+        </es:choose>
+        <es:choose>
+          <es:when test="string-length(//User/DataRestrictionMask)&gt;0">
+            <es:set-value target="DataRestrictionMask" value="//User/DataRestrictionMask"/>
+          </es:when>
+        </es:choose>
+        <es:choose>
+          <es:when test="string-length(//User/DeathMasterPurpose)&gt;0">
+            <es:set-value target="DeathMasterPurpose" value="//User/DeathMasterPurpose"/>
+          </es:when>
+        </es:choose>
+        <es:choose>
+          <es:when test="string-length(//User/DLMask)&gt;0">
+            <es:set-value target="DLMask" value="//User/DLMask"/>
+          </es:when>
+        </es:choose>
+        <es:choose>
+          <es:when test="string-length(//User/DOBMask)&gt;0">
+            <es:set-value target="DOBMask" value="//User/DOBMask"/>
+          </es:when>
+        </es:choose>
+        <es:choose>
+          <es:when test="string-length(//User/ExcludeDMVPII)&gt;0">
+            <es:set-value target="ExcludeDMVPII" value="//User/ExcludeDMVPII"/>
+          </es:when>
+        </es:choose>
+        <es:choose>
+          <es:when test="string-length(//User/IndustryClass)&gt;0">
+            <es:set-value target="IndustryClass" value="//User/IndustryClass"/>
+          </es:when>
+        </es:choose>
+        <es:choose>
+          <es:when test="string-length(//User/SSNMask)&gt;0">
+            <es:set-value target="SSNMask" value="//User/SSNMask"/>
+          </es:when>
+        </es:choose>
+      </es:when>
+    </es:choose>
+  </es:transform>
+  <es:transform name="UserInBand" target="soap:Body/{$query}/{$request}/Row/User">
+    <es:choose>
+      <es:otherwise>
+        <es:choose>
+          <es:otherwise>
+            <es:set-value target="GLBPurpose" value="&apos;0&apos;"/>
+          </es:otherwise>
+          <es:when test="string-length(normalize-space(//GLBPurpose))=0"/>
+        </es:choose>
+      </es:otherwise>
+      <es:when test="contains($glbAllowed, concat(&apos; &apos;, string(number(//GLBPurpose)), &apos; &apos;))">
+        <es:set-value target="GLBPurpose" value="string(number(//GLBPurpose))"/>
+      </es:when>
+    </es:choose>
+    <es:choose>
+      <es:otherwise>
+        <es:choose>
+          <es:otherwise>
+            <es:set-value target="DLPurpose" value="&apos;0&apos;"/>
+          </es:otherwise>
+          <es:when test="string-length(normalize-space(//DLPurpose))=0"/>
+        </es:choose>
+      </es:otherwise>
+      <es:when test="contains($dppaAllowed, concat(&apos; &apos;, string(number(//DLPurpose)), &apos; &apos;))">
+        <es:set-value target="DLPurpose" value="string(number(//DLPurpose))"/>
+      </es:when>
+    </es:choose>
+  </es:transform>
+  <es:transform name="BertErniePlatformOutOfBand" target="soap:Body/{$query}">
+    <es:choose>
+      <es:when test="true()">
+        <es:append-to-value target="LogInfo/ProductId" value="&apos;7&apos;"/>
+        <es:append-to-value target="LogInfo/SubProductId" value="&apos;70014&apos;"/>
+      </es:when>
+    </es:choose>
+  </es:transform>
+  <es:transform name="BertErniePlatformInBand" target="soap:Body/{$query}/{$request}/Row">
+    <es:choose>
+      <es:when required="false" test="$internal_user=1">
+        <es:choose>
+          <es:when required="false" test="string-length(ProductCode)=0">
+            <es:append-to-value name="prod_i" optional="false" target="BertErnieUser/ProductCode" value="&apos;10&apos;"/>
+          </es:when>
+        </es:choose>
+      </es:when>
+      <es:otherwise>
+        <es:append-to-value name="gcid_x" optional="false" target="BertErnieUser/GlobalCompanyId" value="$gc_id"/>
+        <es:append-to-value name="prod_x" optional="false" target="BertErnieUser/ProductCode" value="10"/>
+        <es:append-to-value name="industry_x" optional="false" target="BertErnieUser/IndustryTypeName" value="$BERTERNIE_API_PROGRAM"/>
+      </es:otherwise>
+    </es:choose>
+  </es:transform>
+</es:transforms>

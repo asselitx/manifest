@@ -1,18 +1,16 @@
-<Script>
-	<Transforms>
-		<xsdl:Transform name="BertErnieReportOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
-			<xsdl:choose>
-				<xsdl:when test="true()">
-					<xsdl:SetValue target="_LogFunctionName" value="&apos;BertErnieRpt&apos;"/>
-				</xsdl:when>
-			</xsdl:choose>
-		</xsdl:Transform>
-		<xsdl:Transform name="BertErnieReportInBand" target="soap:Body/{$query}/{$request}" xmlns:xsdl="hpcc-crt">
-			<xsdl:choose>
-				<xsdl:when test="$internal_user=0 and $test_user=1">
-					<xsdl:AppendValue target="Row/Options/IsOnline" value="&apos;1&apos;"/>
-				</xsdl:when>
-			</xsdl:choose>
-		</xsdl:Transform>
-	</Transforms>
-</Script>
+<es:transforms xmlns:es="urn:hpcc:esdl:script">
+  <es:transform name="BertErnieReportOutOfBand" target="soap:Body/{$query}">
+    <es:choose>
+      <es:when test="true()">
+        <es:set-value target="_LogFunctionName" value="&apos;BertErnieRpt&apos;"/>
+      </es:when>
+    </es:choose>
+  </es:transform>
+  <es:transform name="BertErnieReportInBand" target="soap:Body/{$query}/{$request}" xmlns:es="hpcc-crt">
+    <es:choose>
+      <es:when test="$internal_user=0 and $test_user=1">
+        <es:append-to-value target="Row/Options/IsOnline" value="&apos;1&apos;"/>
+      </es:when>
+    </es:choose>
+  </es:transform>
+</es:transforms>
