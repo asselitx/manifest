@@ -1,0 +1,11 @@
+<Script>
+	<Transforms>
+		<xsdl:Transform name="BertErnieSearchOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
+			<xsdl:choose>
+				<xsdl:when test="true()">
+					<xsdl:SetValue target="_LogFunctionName" value="&apos;BertErnieSrch&apos;"/>
+				</xsdl:when>
+			</xsdl:choose>
+		</xsdl:Transform>
+	</Transforms>
+</Script>

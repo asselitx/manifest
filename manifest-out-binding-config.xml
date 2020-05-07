@@ -1,0 +1,249 @@
+<Binding>
+	<Definition>
+		<Script>
+			<Transforms>
+				<xsdl:Transform name="GenericOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
+					<xsdl:choose>
+						<xsdl:when test="true()">
+							<xsdl:SetValue target="_ClientIP" value="$espUserPeer"/>
+							<xsdl:SetValue target="_DeliveryMethod" value="&apos;XML&apos;"/>
+							<xsdl:SetValue target="_ESPClientInterfaceVersion" value="$clientversion"/>
+							<xsdl:SetValue target="_ESPMethodName" value="$method"/>
+							<xsdl:SetValue target="_LoginId" value="$espUserName"/>
+						</xsdl:when>
+					</xsdl:choose>
+				</xsdl:Transform>
+				<xsdl:Transform name="UserOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
+					<xsdl:choose>
+						<xsdl:when test="true()">
+							<xsdl:SetValue target="_QueryId" value="//User/QueryId"/>
+							<xsdl:SetValue target="_ReferenceCode" value="//User/ReferenceCode"/>
+						</xsdl:when>
+					</xsdl:choose>
+					<xsdl:choose>
+						<xsdl:otherwise>
+							<xsdl:choose>
+								<xsdl:otherwise>
+									<xsdl:AppendValue target="GLBPurpose" value="&apos;0&apos;"/>
+								</xsdl:otherwise>
+								<xsdl:when test="string-length(normalize-space(//User/GLBPurpose))=0"/>
+							</xsdl:choose>
+						</xsdl:otherwise>
+						<xsdl:when test="contains($glbAllowed, concat(&apos; &apos;, string(number(//User/GLBPurpose)), &apos; &apos;))">
+							<xsdl:AppendValue target="GLBPurpose" value="string(number(//User/GLBPurpose))"/>
+						</xsdl:when>
+					</xsdl:choose>
+					<xsdl:choose>
+						<xsdl:otherwise>
+							<xsdl:choose>
+								<xsdl:otherwise>
+									<xsdl:AppendValue target="DKermitPurpose" value="&apos;0&apos;"/>
+								</xsdl:otherwise>
+								<xsdl:when test="string-length(normalize-space(//User/DLPurpose))=0"/>
+							</xsdl:choose>
+						</xsdl:otherwise>
+						<xsdl:when test="contains($dKermitAllowed, concat(&apos; &apos;, string(number(//User/DLPurpose)), &apos; &apos;))">
+							<xsdl:AppendValue target="DKermitPurpose" value="string(number(//User/DLPurpose))"/>
+						</xsdl:when>
+					</xsdl:choose>
+					<xsdl:choose>
+						<xsdl:otherwise>
+							<xsdl:SetValue target="_CompanyId" value="&apos;&apos;"/>
+							<xsdl:SetValue target="ExcludeDMVPII" value="&apos;1&apos;"/>
+							<xsdl:choose>
+								<xsdl:when test="string-length($SSNMask)&gt;0">
+									<xsdl:choose>
+										<xsdl:otherwise>
+											<xsdl:SetValue target="SSNMask" value="$SSNMask"/>
+										</xsdl:otherwise>
+										<xsdl:when test="$fullssn=0">
+											<xsdl:SetValue target="SSNMask" value="&apos;none&apos;"/>
+										</xsdl:when>
+									</xsdl:choose>
+								</xsdl:when>
+							</xsdl:choose>
+						</xsdl:otherwise>
+						<xsdl:when test="$internal_user=1">
+							<xsdl:SetValue target="_CompanyId" value="//User/CompanyId"/>
+							<xsdl:choose>
+								<xsdl:when test="string-length(//User/DataPermissionMask)&gt;0">
+									<xsdl:SetValue target="DataPermissionMask" value="//User/DataPermissionMask"/>
+								</xsdl:when>
+							</xsdl:choose>
+							<xsdl:choose>
+								<xsdl:when test="string-length(//User/DataRestrictionMask)&gt;0">
+									<xsdl:SetValue target="DataRestrictionMask" value="//User/DataRestrictionMask"/>
+								</xsdl:when>
+							</xsdl:choose>
+							<xsdl:choose>
+								<xsdl:when test="string-length(//User/DeathMasterPurpose)&gt;0">
+									<xsdl:SetValue target="DeathMasterPurpose" value="//User/DeathMasterPurpose"/>
+								</xsdl:when>
+							</xsdl:choose>
+							<xsdl:choose>
+								<xsdl:when test="string-length(//User/DLMask)&gt;0">
+									<xsdl:SetValue target="DLMask" value="//User/DLMask"/>
+								</xsdl:when>
+							</xsdl:choose>
+							<xsdl:choose>
+								<xsdl:when test="string-length(//User/DOBMask)&gt;0">
+									<xsdl:SetValue target="DOBMask" value="//User/DOBMask"/>
+								</xsdl:when>
+							</xsdl:choose>
+							<xsdl:choose>
+								<xsdl:when test="string-length(//User/ExcludeDMVPII)&gt;0">
+									<xsdl:SetValue target="ExcludeDMVPII" value="//User/ExcludeDMVPII"/>
+								</xsdl:when>
+							</xsdl:choose>
+							<xsdl:choose>
+								<xsdl:when test="string-length(//User/IndustryClass)&gt;0">
+									<xsdl:SetValue target="IndustryClass" value="//User/IndustryClass"/>
+								</xsdl:when>
+							</xsdl:choose>
+							<xsdl:choose>
+								<xsdl:when test="string-length(//User/SSNMask)&gt;0">
+									<xsdl:SetValue target="SSNMask" value="//User/SSNMask"/>
+								</xsdl:when>
+							</xsdl:choose>
+						</xsdl:when>
+					</xsdl:choose>
+				</xsdl:Transform>
+				<xsdl:Transform name="UserInBand" target="soap:Body/{$query}/{$request}/Row/User" xmlns:xsdl="hpcc-crt">
+					<xsdl:choose>
+						<xsdl:otherwise>
+							<xsdl:choose>
+								<xsdl:otherwise>
+									<xsdl:SetValue target="GLBPurpose" value="&apos;0&apos;"/>
+								</xsdl:otherwise>
+								<xsdl:when test="string-length(normalize-space(//GLBPurpose))=0"/>
+							</xsdl:choose>
+						</xsdl:otherwise>
+						<xsdl:when test="contains($glbAllowed, concat(&apos; &apos;, string(number(//GLBPurpose)), &apos; &apos;))">
+							<xsdl:SetValue target="GLBPurpose" value="string(number(//GLBPurpose))"/>
+						</xsdl:when>
+					</xsdl:choose>
+					<xsdl:choose>
+						<xsdl:otherwise>
+							<xsdl:choose>
+								<xsdl:otherwise>
+									<xsdl:SetValue target="DLPurpose" value="&apos;0&apos;"/>
+								</xsdl:otherwise>
+								<xsdl:when test="string-length(normalize-space(//DLPurpose))=0"/>
+							</xsdl:choose>
+						</xsdl:otherwise>
+						<xsdl:when test="contains($dKermitAllowed, concat(&apos; &apos;, string(number(//DLPurpose)), &apos; &apos;))">
+							<xsdl:SetValue target="DLPurpose" value="string(number(//DLPurpose))"/>
+						</xsdl:when>
+					</xsdl:choose>
+				</xsdl:Transform>
+				<xsdl:Transform name="BertErniePlatformOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
+					<xsdl:choose>
+						<xsdl:when test="true()">
+							<xsdl:AppendValue target="LogInfo/ProductId" value="&apos;7&apos;"/>
+							<xsdl:AppendValue target="LogInfo/SubProductId" value="&apos;70014&apos;"/>
+						</xsdl:when>
+					</xsdl:choose>
+				</xsdl:Transform>
+				<xsdl:Transform name="BertErniePlatformInBand" target="soap:Body/{$query}/{$request}/Row" xmlns:xsdl="hpcc-crt">
+					<xsdl:choose>
+						<xsdl:when required="false" test="$internal_user=1">
+							<xsdl:choose>
+								<xsdl:when required="false" test="string-length(ProductCode)=0">
+									<xsdl:AppendValue name="prod_i" optional="false" target="BertErnieUser/ProductCode" value="&apos;10&apos;"/>
+								</xsdl:when>
+							</xsdl:choose>
+						</xsdl:when>
+						<xsdl:otherwise>
+							<xsdl:AppendValue name="gcid_x" optional="false" target="BertErnieUser/GlobalCompanyId" value="$gc_id"/>
+							<xsdl:AppendValue name="prod_x" optional="false" target="BertErnieUser/ProductCode" value="10"/>
+							<xsdl:AppendValue name="industry_x" optional="false" target="BertErnieUser/IndustryTypeName" value="$BERTERNIE_API_PROGRAM"/>
+						</xsdl:otherwise>
+					</xsdl:choose>
+				</xsdl:Transform>
+				<xsdl:EspRequest>
+					<xsdl:include transform="GenericOutOfBand"/>
+					<xsdl:include transform="UserOutOfBand"/>
+					<xsdl:include transform="UserInBand"/>
+					<xsdl:include transform="BertErniePlatformOutOfBand"/>
+					<xsdl:include transform="BertErniePlatformInBand"/>
+				</xsdl:EspRequest>
+			</Transforms>
+		</Script>
+		<Methods>
+			<Method name="EchoTest"/>
+			<Method contextRemove="." name="BertErnieReport" password="xxx" queryname="servicename.queryname" querytype="roxie" status="available" url="http://my.vip.com:9876" username="real-username">
+				<Gateways legacyTransformTarget="soap:Body/{$query}/gateways">
+					<Gateway name="delta_esp" password="xxx" url="http://127.0.0.2:9999/WsDeltabase" username="real-username"/>
+					<Gateway name="delta_db" password="xxx" url="https://127.0.0.1:3306" username="real-username"/>
+				</Gateways>
+				<Script>
+					<Transforms>
+						<xsdl:Transform name="BertErnieReportOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
+							<xsdl:choose>
+								<xsdl:when test="true()">
+									<xsdl:SetValue target="_LogFunctionName" value="&apos;BertErnieRpt&apos;"/>
+								</xsdl:when>
+							</xsdl:choose>
+						</xsdl:Transform>
+						<xsdl:Transform name="BertErnieReportInBand" target="soap:Body/{$query}/{$request}" xmlns:xsdl="hpcc-crt">
+							<xsdl:choose>
+								<xsdl:when test="$internal_user=0 and $test_user=1">
+									<xsdl:AppendValue target="Row/Options/IsOnline" value="&apos;1&apos;"/>
+								</xsdl:when>
+							</xsdl:choose>
+						</xsdl:Transform>
+						<xsdl:EspRequest>
+							<xsdl:include transform="EspRequest"/>
+							<xsdl:include transform="BertErnieReportOutOfBand"/>
+							<xsdl:include transform="BertErnieReportInBand"/>
+						</xsdl:EspRequest>
+					</Transforms>
+				</Script>
+			</Method>
+			<Method contextRemove="." name="BertErnieSearch" password="xxx" queryname="servicename.queryname" querytype="roxie" status="available" url="http://my.vip.com:9876" username="real-username">
+				<Gateways legacyTransformTarget="soap:Body/{$query}/gateways">
+					<Gateway name="delta_esp" password="xxx" url="http://127.0.0.2:9999/WsDeltabase" username="real-username"/>
+					<Gateway name="delta_db" password="xxx" url="https://127.0.0.1:3306" username="real-username"/>
+				</Gateways>
+				<Script>
+					<Transforms>
+						<xsdl:Transform name="BertErnieSearchOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
+							<xsdl:choose>
+								<xsdl:when test="true()">
+									<xsdl:SetValue target="_LogFunctionName" value="&apos;BertErnieSrch&apos;"/>
+								</xsdl:when>
+							</xsdl:choose>
+						</xsdl:Transform>
+						<xsdl:EspRequest>
+							<xsdl:include transform="EspRequest"/>
+							<xsdl:include transform="BertErnieSearchOutOfBand"/>
+						</xsdl:EspRequest>
+					</Transforms>
+				</Script>
+			</Method>
+			<Method contextRemove="." name="KermitSearch" password="xxx" queryname="servicename.queryname" querytype="roxie" status="available" url="http://my.vip.com:9876" username="real-username">
+				<Gateways legacyTransformTarget="soap:Body/{$query}/gateways">
+					<Gateway name="delta_esp" password="xxx" url="http://127.0.0.2:9999/WsDeltabase" username="real-username"/>
+					<Gateway name="delta_db" password="xxx" url="https://127.0.0.1:3306" username="real-username"/>
+				</Gateways>
+				<Script>
+					<Transforms>
+						<xsdl:Transform name="KermitSearchOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
+							<xsdl:choose>
+								<xsdl:when test="true()">
+									<xsdl:SetValue target="_LogFunctionName" value="&apos;BertErnieSrch&apos;"/>
+								</xsdl:when>
+							</xsdl:choose>
+						</xsdl:Transform>
+						<xsdl:EspRequest>
+							<xsdl:include transform="EspRequest"/>
+							<xsdl:include transform="KermitSearchOutOfBand"/>
+						</xsdl:EspRequest>
+					</Transforms>
+				</Script>
+			</Method>
+			<Method name="Ping"/>
+		</Methods>
+	</Definition>
+</Binding>
+

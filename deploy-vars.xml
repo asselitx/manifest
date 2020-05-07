@@ -1,0 +1,12 @@
+<deploy-vars>
+	<var name="methods.url" value="http://my.vip.com:9876"/>
+	
+	<var name="gateway.delta_esp.url" value="http://127.0.0.2:9999/WsDeltabase"/>
+	<var name="gateway.delta_esp.username" value="real-username" />
+	<var name="gateway.delta_esp.password" value="xxx" />
+
+	<var name="gateway.delta_db.url" value="https://127.0.0.1:3306"/>
+	<var name="gateway.delta_db.username" value="real-username" />
+	<var name="gateway.delta_db.password" value="xxx" />
+
+</deploy-vars>

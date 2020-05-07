@@ -1,0 +1,14 @@
+<desdl-manifest target-process="process_name" target-binding-id="binding_id">
+	<script-include-path>path to includes</script-include-path>
+	<script-include-path>path to includes</script-include-path>
+	<deploy-vars-file>path to deploy-vars file</deploy-vars-file>
+	<service-script-file>path to service config xml</service-script-file>
+	<log-transform-path name="log-transform-name" encoded="1" overwrite="1">
+			path to log-transform file
+	</log-transform-path>
+	<output write-file="1" push-to-server="0" write-shell-script="1">
+		<path>path to write output</path>
+		<binding-config-filename>output filename</binding-config-filename>
+		<shell-script-filename>shell script filename</shell-script-filename>
+	</output>
+</desdl-manifest>

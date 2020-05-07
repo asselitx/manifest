@@ -1,0 +1,18 @@
+<Script>
+	<Transforms>
+		<xsdl:Transform name="BertErnieReportOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="hpcc-crt">
+			<xsdl:choose>
+				<xsdl:when test="true()">
+					<xsdl:SetValue target="_LogFunctionName" value="&apos;BertErnieRpt&apos;"/>
+				</xsdl:when>
+			</xsdl:choose>
+		</xsdl:Transform>
+		<xsdl:Transform name="BertErnieReportInBand" target="soap:Body/{$query}/{$request}" xmlns:xsdl="hpcc-crt">
+			<xsdl:choose>
+				<xsdl:when test="$internal_user=0 and $test_user=1">
+					<xsdl:AppendValue target="Row/Options/IsOnline" value="&apos;1&apos;"/>
+				</xsdl:when>
+			</xsdl:choose>
+		</xsdl:Transform>
+	</Transforms>
+</Script>
