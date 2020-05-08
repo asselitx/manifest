@@ -66,20 +66,6 @@ or just include some by name:
     </Definition>	
   </Binding>
 
-or as a list of names:
-
-  <Binding>
-    <Definition>
-      <Script>
-        <Transforms>
-          <EspRequest>
-            <xsdl:include file="service-scripts.xml" transforms="GenericOutOfBand,UserOutOfBand"/>
-          </EspRequest>
-        </Transforms>
-      </Script>
-    </Definition>	
-  </Binding>
-
 This way you can organize scripts in 'shared' files where different subsets of transforms are used by a wide variety of different bindings. Also you can put all the transforms you'd need for a given service or method in a single file and automatically include 
 
 ### Deployment Variables
