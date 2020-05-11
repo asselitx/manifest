@@ -1,7 +1,0 @@
-<es:transform name="KermitSearchOutOfBand" target="soap:Body/{$query}" xmlns:es="urn:hpcc:esdl:script">
-  <es:choose>
-    <es:when test="true()">
-      <es:SetValue target="_LogFunctionName" value="&apos;BertErnieSrch&apos;"/>
-    </es:when>
-  </es:choose>
-</es:transform>

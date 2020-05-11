@@ -1,0 +1,8 @@
+<es:transforms xmlns:es="urn:hpcc:esdl:script">
+  <!--
+  This is a placeholder for as yet unimplemented OscarSearch transformations. Although
+  not implemented, it is known that OscarSearch shares absolutely nothing with any other
+  method in the service. Transforms shared between KermitSearch, KermitReport,
+  BertErnieSearch, and BertErnieReport MUST NOT be applied to OscarSearch.
+  -->
+</es:transforms>

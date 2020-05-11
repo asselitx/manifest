@@ -1,160 +1,171 @@
 <es:transforms xmlns:es="urn:hpcc:esdl:script">
   <es:transform name="GenericOutOfBand" target="soap:Body/{$query}">
-    <es:choose>
-      <es:when test="true()">
-        <es:set-value target="_ClientIP" value="$espUserPeer"/>
-        <es:set-value target="_DeliveryMethod" value="&apos;XML&apos;"/>
-        <es:set-value target="_ESPClientInterfaceVersion" value="$clientversion"/>
-        <es:set-value target="_ESPMethodName" value="$method"/>
-        <es:set-value target="_LoginId" value="$espUserName"/>
-      </es:when>
-    </es:choose>
+    <!--
+    Values set in this transform are set for a high percentage of scripted methods. No
+    value referenced here is either method or service specific.
+
+    This does not apply to OscarSearch.
+    -->
+    <es:set-value target="_ClientIP" value="$espUserPeer"/>
+    <es:set-value target="_DeliveryMethod" value="&apos;XML&apos;"/>
+    <es:set-value target="_ESPClientInterfaceVersion" value="$clientversion"/>
+    <es:set-value target="_ESPMethodName" value="$method"/>
+    <es:set-value target="_LoginId" value="$espUserName"/>
   </es:transform>
   <es:transform name="UserOutOfBand" target="soap:Body/{$query}">
+    <!--
+    Values set in this transform are set for a high percentage of scripted requests that
+    embed a shared User structure. No value referenced here is either method or service specific.
+
+    This does not apply to OscarSearch.
+    -->
+    <es:set-value target="_QueryId" value="//User/QueryId"/>
+    <es:set-value target="_ReferenceCode" value="//User/ReferenceCode"/>
     <es:choose>
-      <es:when test="true()">
-        <es:set-value target="_QueryId" value="//User/QueryId"/>
-        <es:set-value target="_ReferenceCode" value="//User/ReferenceCode"/>
-      </es:when>
-    </es:choose>
-    <es:choose>
-      <es:otherwise>
-        <es:choose>
-          <es:otherwise>
-            <es:append-to-value target="GLBPurpose" value="&apos;0&apos;"/>
-          </es:otherwise>
-          <es:when test="string-length(normalize-space(//User/GLBPurpose))=0"/>
-        </es:choose>
-      </es:otherwise>
       <es:when test="contains($glbAllowed, concat(&apos; &apos;, string(number(//User/GLBPurpose)), &apos; &apos;))">
-        <es:append-to-value target="GLBPurpose" value="string(number(//User/GLBPurpose))"/>
+        <es:set-value target="GLBPurpose" value="string(number(//User/GLBPurpose))"/>
+      </es:when>
+      <es:when test="not(string-length(normalize-space(//User/GLBPurpose))=0)">
+        <es:set-value target="GLBPurpose" value="&apos;0&apos;"/>
       </es:when>
     </es:choose>
     <es:choose>
-      <es:otherwise>
-        <es:choose>
-          <es:otherwise>
-            <es:append-to-value target="DPPAPurpose" value="&apos;0&apos;"/>
-          </es:otherwise>
-          <es:when test="string-length(normalize-space(//User/DLPurpose))=0"/>
-        </es:choose>
-      </es:otherwise>
       <es:when test="contains($dppaAllowed, concat(&apos; &apos;, string(number(//User/DLPurpose)), &apos; &apos;))">
-        <es:append-to-value target="DPPAPurpose" value="string(number(//User/DLPurpose))"/>
+        <es:set-value target="DPPAPurpose" value="string(number(//User/DLPurpose))"/>
+      </es:when>
+      <es:when test="not(string-length(normalize-space(//User/DLPurpose))=0)">
+        <es:set-value target="DPPAPurpose" value="&apos;0&apos;"/>
       </es:when>
     </es:choose>
     <es:choose>
+      <es:when test="$internal_user=1">
+        <es:set-value target="_CompanyId" value="//User/CompanyId"/>
+        <es:if test="string-length(//User/DataPermissionMask)&gt;0">
+          <es:set-value target="DataPermissionMask" value="//User/DataPermissionMask"/>
+        </es:if>
+        <es:if test="string-length(//User/DataRestrictionMask)&gt;0">
+          <es:set-value target="DataRestrictionMask" value="//User/DataRestrictionMask"/>
+        </es:if>
+        <es:if test="string-length(//User/DeathMasterPurpose)&gt;0">
+          <es:set-value target="DeathMasterPurpose" value="//User/DeathMasterPurpose"/>
+        </es:if>
+        <es:if test="string-length(//User/DLMask)&gt;0">
+          <es:set-value target="DLMask" value="//User/DLMask"/>
+        </es:if>
+        <es:if test="string-length(//User/DOBMask)&gt;0">
+          <es:set-value target="DOBMask" value="//User/DOBMask"/>
+        </es:if>
+        <es:if test="string-length(//User/ExcludeDMVPII)&gt;0">
+          <es:set-value target="ExcludeDMVPII" value="//User/ExcludeDMVPII"/>
+        </es:if>
+        <es:if test="string-length(//User/IndustryClass)&gt;0">
+          <es:set-value target="IndustryClass" value="//User/IndustryClass"/>
+        </es:if>
+        <es:if test="string-length(//User/SSNMask)&gt;0">
+          <es:set-value target="SSNMask" value="//User/SSNMask"/>
+        </es:if>
+      </es:when>
       <es:otherwise>
         <es:set-value target="_CompanyId" value="&apos;&apos;"/>
         <es:set-value target="ExcludeDMVPII" value="&apos;1&apos;"/>
-        <es:choose>
-          <es:when test="string-length($SSNMask)&gt;0">
-            <es:choose>
-              <es:otherwise>
-                <es:set-value target="SSNMask" value="$SSNMask"/>
-              </es:otherwise>
-              <es:when test="$fullssn=0">
-                <es:set-value target="SSNMask" value="&apos;none&apos;"/>
-              </es:when>
-            </es:choose>
-          </es:when>
-        </es:choose>
+        <es:if test="string-length($SSNMask)&gt;0">
+          <es:choose>
+            <es:otherwise>
+              <es:set-value target="SSNMask" value="$SSNMask"/>
+            </es:otherwise>
+            <es:when test="$fullssn=0">
+              <es:set-value target="SSNMask" value="&apos;none&apos;"/>
+            </es:when>
+          </es:choose>
+        </es:if>
       </es:otherwise>
-      <es:when test="$internal_user=1">
-        <es:set-value target="_CompanyId" value="//User/CompanyId"/>
-        <es:choose>
-          <es:when test="string-length(//User/DataPermissionMask)&gt;0">
-            <es:set-value target="DataPermissionMask" value="//User/DataPermissionMask"/>
-          </es:when>
-        </es:choose>
-        <es:choose>
-          <es:when test="string-length(//User/DataRestrictionMask)&gt;0">
-            <es:set-value target="DataRestrictionMask" value="//User/DataRestrictionMask"/>
-          </es:when>
-        </es:choose>
-        <es:choose>
-          <es:when test="string-length(//User/DeathMasterPurpose)&gt;0">
-            <es:set-value target="DeathMasterPurpose" value="//User/DeathMasterPurpose"/>
-          </es:when>
-        </es:choose>
-        <es:choose>
-          <es:when test="string-length(//User/DLMask)&gt;0">
-            <es:set-value target="DLMask" value="//User/DLMask"/>
-          </es:when>
-        </es:choose>
-        <es:choose>
-          <es:when test="string-length(//User/DOBMask)&gt;0">
-            <es:set-value target="DOBMask" value="//User/DOBMask"/>
-          </es:when>
-        </es:choose>
-        <es:choose>
-          <es:when test="string-length(//User/ExcludeDMVPII)&gt;0">
-            <es:set-value target="ExcludeDMVPII" value="//User/ExcludeDMVPII"/>
-          </es:when>
-        </es:choose>
-        <es:choose>
-          <es:when test="string-length(//User/IndustryClass)&gt;0">
-            <es:set-value target="IndustryClass" value="//User/IndustryClass"/>
-          </es:when>
-        </es:choose>
-        <es:choose>
-          <es:when test="string-length(//User/SSNMask)&gt;0">
-            <es:set-value target="SSNMask" value="//User/SSNMask"/>
-          </es:when>
-        </es:choose>
-      </es:when>
     </es:choose>
   </es:transform>
   <es:transform name="UserInBand" target="soap:Body/{$query}/{$request}/Row/User">
+    <!--
+    Values set in this transform are set for a high percentage of scripted requests that
+    embed a shared User structure. No value referenced here is either method or service specific.
+
+    This does not apply to OscarSearch.
+    -->
     <es:choose>
-      <es:otherwise>
-        <es:choose>
-          <es:otherwise>
-            <es:set-value target="GLBPurpose" value="&apos;0&apos;"/>
-          </es:otherwise>
-          <es:when test="string-length(normalize-space(//GLBPurpose))=0"/>
-        </es:choose>
-      </es:otherwise>
       <es:when test="contains($glbAllowed, concat(&apos; &apos;, string(number(//GLBPurpose)), &apos; &apos;))">
         <es:set-value target="GLBPurpose" value="string(number(//GLBPurpose))"/>
       </es:when>
+      <es:when test="not(string-length(normalize-space(//GLBPurpose))=0)">
+        <es:set-value target="GLBPurpose" value="&apos;0&apos;"/>
+      </es:when>
     </es:choose>
     <es:choose>
-      <es:otherwise>
-        <es:choose>
-          <es:otherwise>
-            <es:set-value target="DLPurpose" value="&apos;0&apos;"/>
-          </es:otherwise>
-          <es:when test="string-length(normalize-space(//DLPurpose))=0"/>
-        </es:choose>
-      </es:otherwise>
       <es:when test="contains($dppaAllowed, concat(&apos; &apos;, string(number(//DLPurpose)), &apos; &apos;))">
         <es:set-value target="DLPurpose" value="string(number(//DLPurpose))"/>
+      </es:when>
+      <es:when test="not(string-length(normalize-space(//DLPurpose))=0)">
+        <es:set-value target="DLPurpose" value="&apos;0&apos;"/>
       </es:when>
     </es:choose>
   </es:transform>
   <es:transform name="BertErniePlatformOutOfBand" target="soap:Body/{$query}">
-    <es:choose>
-      <es:when test="true()">
-        <es:append-to-value target="LogInfo/ProductId" value="&apos;7&apos;"/>
-        <es:append-to-value target="LogInfo/SubProductId" value="&apos;70014&apos;"/>
-      </es:when>
-    </es:choose>
+    <!--
+    The values set in this transformation are product specific values that apply to all
+    service methods with the exception of OscarSearch.
+    -->
+    <es:set-value target="LogInfo/ProductId" value="&apos;7&apos;"/>
+    <es:set-value target="LogInfo/SubProductId" value="&apos;70014&apos;"/>
   </es:transform>
   <es:transform name="BertErniePlatformInBand" target="soap:Body/{$query}/{$request}/Row">
+    <!--
+    The values set in this transformation are product specific values that apply to both
+    BertErnieSearch and BertErnieReport.
+    -->
     <es:choose>
-      <es:when required="false" test="$internal_user=1">
-        <es:choose>
-          <es:when required="false" test="string-length(ProductCode)=0">
-            <es:append-to-value name="prod_i" optional="false" target="BertErnieUser/ProductCode" value="&apos;10&apos;"/>
-          </es:when>
-        </es:choose>
+      <es:when test="$internal_user=1">
+        <es:if test="string-length(ProductCode)=0">
+          <es:set-value name="prod_i" optional="false" target="BertErnieUser/ProductCode" value="&apos;10&apos;"/>
+        </es:if>
       </es:when>
       <es:otherwise>
-        <es:append-to-value name="gcid_x" optional="false" target="BertErnieUser/GlobalCompanyId" value="$gc_id"/>
-        <es:append-to-value name="prod_x" optional="false" target="BertErnieUser/ProductCode" value="10"/>
-        <es:append-to-value name="industry_x" optional="false" target="BertErnieUser/IndustryTypeName" value="$BERTERNIE_API_PROGRAM"/>
+        <es:set-value name="gcid_x" optional="false" target="BertErnieUser/GlobalCompanyId" value="$gc_id"/>
+        <es:set-value name="prod_x" optional="false" target="BertErnieUser/ProductCode" value="10"/>
+        <es:set-value name="industry_x" optional="false" target="BertErnieUser/IndustryTypeName" value="$SESAMESTREET_API_PROGRAM"/>
       </es:otherwise>
     </es:choose>
+  </es:transform>
+  <es:transform name="KermitPlatformInBand" target="soap:Body/{$query}/{$request}/Row">
+    <!--
+    The values set in this transformation are product specific values that apply to both
+    KermitSearch and KermitReport.
+    -->
+    <es:choose>
+      <es:when test="$internal_user=1">
+        <es:if test="string-length(ProductCode)=0">
+          <es:set-value name="prod_i" optional="false" target="KermitUser/ProductCode" value="&apos;10&apos;"/>
+        </es:if>
+      </es:when>
+      <es:otherwise>
+        <es:set-value name="gcid_x" optional="false" target="KermitUser/GlobalCompanyId" value="$gc_id"/>
+        <es:set-value name="prod_x" optional="false" target="KermitUser/ProductCode" value="10"/>
+        <es:set-value name="industry_x" optional="false" target="KermitUser/IndustryTypeName" value="$SESAMESTREET_API_PROGRAM"/>
+      </es:otherwise>
+    </es:choose>
+  </es:transform>
+  <es:transform name="UserPermissionOutOfBand" target="soap:Body/{$query">
+    <!--
+    The values set in this transformation are product specific values that apply to all
+    service methods with the exception of OscarSearch. In fact, OscarSearch is guaranteed
+    to fail 100% of the time if this transform is applied to its requests.
+    
+    Note that this transform assumes preservation of script order is implemented, as it
+    depends on UserOutOfBand to populate the tested values.
+    -->
+    <es:if test="not(number(GLBPurpose)=5)">
+      <es:fail code="-1" message="{$method} requires GLBPurpose to be 5"/>
+    </es:if>
+    <es:if test="not(number(DLPurpose)=1)">
+      <es:fail code="-1" message="{$method} requires DLPurpose to be 1"/>
+    </es:if>
+    <es:if test="not(number(DeathMasterPurpose)=1)">
+      <es:fail code="-1" message="{$method} requires DeathMasterPurpose to be 1"/>
+    </es:if>
   </es:transform>
 </es:transforms>
