@@ -72,7 +72,11 @@ This way you can organize scripts in 'shared' files where different subsets of t
 
 ### Deployment Variables
 
-As Tony pointed out the variable notation must be unique for each level of our scripts that does variable replacement. For deployment variables, ensure that the **%xxx%** notation that won't conflict with any other type of escaping or variable notation. 
+Deployment variables are in the provisional format **%variablename%**. We'll verify that this notaion doesn't conflict with any notation or escaping used at any other levels of scripting- including URL and XML escaping, XSLT, XML and our own scripting language.
+
+These variables are for the purpose of customizing a final output-binding-config for different deployment environments such as QA, Development and Production. Example uses include different URLs, usernames and passwords required for the different environments. For a given release, an output-binding-config will be identical for all environments with the exception of these values.
+
+Variable replacement is a simple replacement of the **%variablename%** markup with the corresponding value found in the deploy-vars.xml file. This replacement is done by the Build Tool as it is building the output-binding-config. No further processing of deploy-vars will need to be done during script loading or script runtime.
 
 ### Outline
 
@@ -96,7 +100,7 @@ As Tony pointed out the variable notation must be unique for each level of our s
 1. The service-binding input is for the complete serivce and will replace any current service binding configurations
 2. No validation is done to ensure all service methods have a configuration. Some deployments legitimately do not configure all methods in a service. Future behavior can give warnings for a method with no configuration.
 3. Generate ERROR for name collisions found when resolving includes in a single scope: service or method-level for a single method, not between all methods.
-4. The ESDL engine, including hte script engine, would only need to read in the **manifest-out-binding-config.xml** file and possibly a log-transforms.xslt file for the entire service. This may change based on Tony's config file refactoring.
+4. The ESDL engine, including the script engine, would only need to read in the **manifest-out-binding-config.xml** file and possibly a log-transforms.xslt file for the entire service. This may change based on Tony's config file refactoring.
 
 ## Two
 
