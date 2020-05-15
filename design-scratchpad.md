@@ -36,6 +36,7 @@ Various thoughts and to-dos are listed here. Some are resolved and already inclu
     2. ANT
     3. ecl
 16. Could tool automatically generate some unique identifier for each statement that can be used in debugging output to identify where you are in the code.
+17. What will a developers code-build-test cycle look like? Will the use of the manifest tool be required to build a configuration? Think about how we can make the cycle easy and quick.
 
 ## Binding/Blob Format
 

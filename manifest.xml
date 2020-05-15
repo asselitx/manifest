@@ -1,14 +1,59 @@
-<desdl-manifest target-process="process_name" target-binding-id="binding_id">
-	<script-include-path>path to includes</script-include-path>
-	<script-include-path>path to includes</script-include-path>
-	<deploy-vars-file>path to deploy-vars file</deploy-vars-file>
-	<service-script-file>path to service config xml</service-script-file>
-	<log-transform-path name="log-transform-name" encoded="1" overwrite="1">
-			path to log-transform file
-	</log-transform-path>
-	<output write-file="1" push-to-server="0" write-shell-script="1">
-		<path>path to write output</path>
-		<binding-config-filename>output filename</binding-config-filename>
-		<shell-script-filename>shell script filename</shell-script-filename>
-	</output>
+<!--
+    Assume these paths are all relative to the 'source' directory 
+    containing all of your repo clones:
+
+    source
+    |- HPCC-Platform
+    |- manifest
+    |  |- binding-config.xml
+    |  |- deploy-vars.xml
+    |  |- design-scratchpad.xml
+    |  |- log-transform.xml (not in our actual repo)
+    |  |- manifest.xml
+    |  |- manifest-out-binding-config.xml
+    |  |- manifest-ws_sesame.xml
+    |  |- method-script-kermitsearch.xml
+    |  |- method-scripts-berterniereport.xml
+    |  |- method-scripts-berterniesearch.xml
+    |  |- README.md
+    |  |- service-scripts.xml
+    |
+
+    This is for a service named WsSesame, containing three methods:
+
+    - BertErnieSearch
+    - BertErnieReport
+    - KermitSearch
+
+    It is bound on port 1234, and running in a DESDL ESP process 
+    named sesame-esp. The interface definition, assumed to be 
+    already published to the server, is named ws_sesame.1.
+-->  
+
+<desdl-manifest target-process="sesame-esp" target-binding-id="binding_id">
+  <script-include path="manifest"/>
+  <deploy-vars-file path="manifest/deploy-vars.xml"/>
+  <service-script-file path="manifest/service"/>
+  <log-transform-file path="manifest/log-transform.xml" encoded="1" overwrite="1"/>
+  <!--
+			Attributes on the output element toggle the output actions. 
+			Child elements specify details of the requested output.
+
+			<server> and <binding> elements have the information needed to
+			either directly bind the service on the server or generate a 
+			shell script that would do it. These attribues are the arguments 
+			to the command esdl bind-service. Either binding-port or 
+			binding-name are required, not both, following the requirements
+			of the esdl bind-service command.
+
+			<file> element has the path to write out the binding configuration.
+
+			<shell-script> element has the path to write out the shell script.
+  -->
+  <output write-file="1" bind-service="0" write-shell-script="1">
+  	<server ip="127.0.0.1" port="8010" username="username" password="pw"/>
+  	<binding esp-process-name="sesame-esp" binding-port="1234" binding-name="sesame-esp.1234.WsSesame" interface-definition="ws_sesame.1"/>
+    <file path="manifest/manifest-out-binding-config"/>
+    <shell-script path="manifest/ws_sesame-deploy.sh"/>
+  </output>
 </desdl-manifest>
