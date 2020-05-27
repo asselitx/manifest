@@ -1,0 +1,141 @@
+<ec:targets xmlns:ec="urn:hpcc:esdl:config">
+  <!--
+  A single definition of the connection parameters, and related info, for a shared remote
+  server. The intent is to reduce redundancy in binding definitions by recognizing that
+  many methods in a service may refer to the same remote servers. For compatibility, all
+  current Method and Gateway definitions must be supported but can be augmented to enable
+  reuse of common values.
+  
+    * @name: user defined identifier, unique among target instances in the configuration
+    * @desc: descriptive text provided for readability
+    * @urn: user defined value used to identify the source of remote errors
+    * @url: remote connection address
+    * @username: authorized user credential for remote connection
+    * @password: authorized user credential for remote connection
+    * @querytype: nature of requests sent to remote host (affects request format)
+    * @target: cross reference to another definition from which any or all optional values
+               may be inherited
+    * @contextRemove: XPath used in Method elements controlling which part of the Method
+                      definition is omitted from the remote requests
+    * @status: state used in Method elements controlling ...
+    * Gateways: specification of gateway targets shared by all referencing Method elements 
+
+  Of the available attributes, only @name is required. References to a named target
+  inherit all values included in the definition, but may override them. In the example
+  provided, "sesame.roxie" inherits the connection parameters of "roxie", but sets its
+  own @urn and gateways. Also, "OscarSearch" inherits the "roxie" connection parameters
+  yet overrides @urn to identify as "sesame.urn".
+    
+  Target inheritance of another target adds complexity. It is included to illustrate what
+  is possible, not what is required. Omission of this feature will increase redundancy,
+  but not to the point of potentially dozens of methods replicating their remote target
+  and gateway configurations.
+  -->
+  <ec:target name="roxie"
+             desc="roxie server shared by multiple services"
+             urn="urn:hpcc:roxie"
+             url="%methods.url%"
+             username="%methods.username%"
+             password="%methods.password%"
+             querytype="roxie"
+             contextRemove="."
+             status="available"/>
+  <ec:target name="sesame.roxie"
+             target="roxie"
+             desc="roxie server for sesame street service"
+             urn="urn:hpcc:roxie:sesame">
+	<Gateways legacyTransformTarget="soap:Body/{$query}/gateways">
+	  <!--
+	  In this example, the Gateway definitions could be inline instead of relying on a
+	  target reference. A more complex example might show each gateway target referenced
+	  multiple times.
+	  -->
+	  <Gateway name="delta_esp" target="sesame.delta.esp"/>
+	  <Gateway name="delta_db" target="sesame.delta.esp"/>
+	</Gateways>
+  </ec:target>
+  <ec:target name="sesame.delta.esp"
+          desc="ESP providing deltabase record lookup"
+          urn="urn:hpcc:deltabase:esp:sesame"
+          url="%gateway.delta_esp.url%"
+          username="%gateway.delta_esp.username%"
+          password="%gateway.delta_esp.password%"/>
+  <ec:target name="sesame.delta.db"
+          desc="MySQL database providing deltabase record lookup"
+          urn="urn:hpcc:deltabase:db:sesame"
+          url="%gateway.delta_db.url%"
+          username="%gateway.delta_db.username%"
+          password="%gateway.delta_db.password%"/>
+</ec:targets>
+
+<!--
+This:
+  <Method contextRemove="."
+          name="KermitReport"
+          password="xxx"
+          queryname="servicename.queryname"
+          querytype="roxie"
+          status="available"
+          url="%methods.url%"
+          username="username">
+	<Gateways legacyTransformTarget="soap:Body/{$query}/gateways">
+	  <Gateway name="delta_esp"
+	           password="%gateway.delta_esp.password%"
+	           url="%gateway.delta_esp.url%"
+	           username="%gateway.delta_esp.username%"/>
+	  <Gateway name="delta_db"
+	           password="%gateway.delta_db.password%"
+	           url="%gateway.delta_db.url%"
+	           username="%gateway.delta_db.username%"/>
+	</Gateways>
+	...
+  </Method>
+  <Method contextRemove="."
+          name="BertErnieSearch"
+          password="xxx"
+          queryname="servicename.queryname"
+          querytype="roxie"
+          status="available"
+          url="%methods.url%"
+          username="username">
+	<Gateways legacyTransformTarget="soap:Body/{$query}/gateways">
+	  <Gateway name="delta_esp"
+	           password="%gateway.delta_esp.password%"
+	           url="%gateway.delta_esp.url%"
+	           username="%gateway.delta_esp.username%"/>
+	  <Gateway name="delta_db"
+	           password="%gateway.delta_db.password%"
+	           url="%gateway.delta_db.url%"
+	           username="%gateway.delta_db.username%"/>
+	</Gateways>
+	...
+  </Method>
+  <Method contextRemove="."
+          name="OscarSearch"
+          password="xxx"
+          queryname="servicename.queryname"
+          querytype="roxie"
+          status="available"
+          url="%methods.url%"
+          username="username">
+	...
+  </Method>
+
+Could be reduced to:
+  <Method name="KernitReport"
+          queryname="servicename.queryname"
+          target="sesame.roxie">
+    ...
+  </Method>
+  <Method name="BertErnieSearch"
+          queryname="servicename.queryname"
+          target="sesame.roxie">
+    ...
+  </Method>
+  <Method name="OscarSearch"
+          queryname="servicename.queryname"
+          target="roxie"
+          urn="urn:hpcc:roxie:sesame">
+    ...
+  </Method>
+-->
