@@ -1,0 +1,112 @@
+<es:external-sets xmlns:es="urn:hpcc:esdl:script">
+  <!--
+  external-sets
+    - contains any number of external-set elements
+  external-set
+    - contains any number of external-variable elements
+    - contains any number of external-input elements
+    - may be qualified with a user-defined name; this value is only used to select
+      instances within an external-sets instance
+    - may be qualified by a service name
+    - may be qualified by both a service and method name
+    - may be qualified by an entry point selector (a well-known identifier for
+      an entry point); omission applies the value for the duration of a transaction
+      TBD: is the identifier a compound value for entry points that allow multiple
+           occurrences, or are more attributes used?
+  
+  external-variable causes a global variable (automatically visible) to be created
+  external-input causes a global input (made visible by a param statement) to be created
+  -->
+  <es:external-set name="Global">
+    <!--
+    GLBPurpose validation is not a unversal operation, but is common enough for its
+    implementation to be shared by multiple services.
+    
+    The security manager is expected to define which values a user is allowed to submit.
+    This expectation does require services to use specific security managers capable of
+    satisfying the expectation.
+    
+    A service or method may want to extend enforcement by defining a set of values which
+    it will accept. The enforcement would be verifying that the value submitted by the
+    user is permitted for that user and accepted by the service or method.
+    
+    Define a default external input that accepts any value (the input value is an example,
+    and is subject to change).
+    
+    If every service defaults to accepting all, then the es:param statement referincing
+    this input could contain the default. There are security managers that do not support
+    GLBPurpose. It is conceivable that an alternate set of global definitions could give
+    a different default value. Placing the default here may make it easier to never rely
+    upon the es:param default.
+    -->
+    <es:external-input name="AcceptedGLBPurposes" select="' 0 1 2 3 4 5 6 7 11 12 '"/>
+  </es:external-set>
+  <es:external-set name="SesameStreet" service="SesameStreet">
+    <!--
+    SesameStreet service requires GLB purpose of 5. If the "Global" set is included, this
+    definition of "AcceptedGLBPurposes" will override the "Global" definition.
+    
+    Does not apply to SesameStreet/OscarSearch.
+    -->
+    <es:external-input name="AcceptedGLBPurposes" select="' 5 '"/>
+    <!--
+    SesameStree requires DL purpose of 1.
+    
+    Does not apply to SesameStreet/OscarSearch.
+    -->
+    <es:external-input name="PermittedDLPurpose" select="'1'"/>
+    <!--
+    SesameStree requires Death Master purpose purpose of 01.
+    
+    Does not apply to SesameStreet/OscarSearch.
+    -->
+    <es:external-input name="PermittedDeathMasterPurpose" select="'01'">
+    <!--
+    The default product code value to be used if not given in the request. Could be taken
+    from script content, but reusability improves by separating literals from code.
+    
+    Does not apply to SesameStreet/OscarSearch.
+    -->
+    <es:external-input name="DefaultProductCode" select="'10'"/>
+  </es:external-set>
+  <es:external-set name="SesameStreet" service="SesameStreet" entry-point="PreAgentLogContent">
+    <!--
+    Both of these values are needed only for logging. Assuming global variables are added
+    to the log blob, which will be necessary, a variable declaration creates the values
+    without requiring any scripting. If not added automatically to the log blob, they
+    should be inputs.
+
+    Does not apply to SesameStreet/OscarSearch.
+    -->
+    <es:external-variable name="ProductId" select="'7'"/>
+    <es:external-variable name="SubProductId" select="'70014'"/>
+  </es:external-set>
+  <es:external-set name="BertErnieReport" service="SesameStreet" method="BertErnieReport" entry-point="PreAgentLogContent">
+    <!--
+    This value is needed only for logging. Refer to SesameStreet comment re: logging.
+    Defining this value eliminates the need for transform BertErnieReportOutOfBand.
+    -->
+    <es:external-variable name="LogAsFunctionName" select="'BertErnieRpt'"/>
+  </es:external-set>
+  <es:external-set name="BertErnieSearch" service="SesameStreet" method="BertErnieSearch" entry-point="PreAgentLogContent">
+    <!--
+    This value is needed only for logging. Refer to SesameStreet comment re: logging.
+    Defining this value eliminates the need for transform BertErnieSearchOutOfBand.
+    -->
+    <es:external-variable name="LogAsFunctionName" select="'BertErnieSrch'"/>
+  </es:external-set>
+  <es:external-set name="KermitReport" service="SesameStreet" method="BertErnieReport" entry-point="PreAgentLogContent">
+    <!--
+    This value is needed only for logging. Refer to SesameStreet comment re: logging.
+    Defining this value eliminates the need for transform BertErnieReportOutOfBand.
+    -->
+    <es:external-variable name="LogAsFunctionName" select="'KermitRpt'"/>
+  </es:external-set>
+  <es:external-set name="KermitSearch" service="SesameStreet" method="KermitSearch" entry-point="PreAgentLogContent">
+    <!--
+    This value is needed only for logging. Refer to SesameStreet comment re: logging.
+    Defining this value eliminates the need for transform KermitSearchOutOfBand.
+    -->
+    <es:external-variable name="LogAsFunctionName" select="'KermitSrch'"/>
+  </es:external-set>
+</es:external-sets>
