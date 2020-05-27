@@ -16,9 +16,11 @@ In this directory are sample files showing how this could look. These files are 
 | binding-config.xml | Based on the current binding configuration of DESDL services. Can contain deployment variables that the tool substitutes with actual values defined in **deploy-vars.xml** file|
 | service-scripts.xml | Contains the service-level scripts potentially shared by all methods referenced in **binding-config.xml** | 
 | deploy-vars.xml | Provides values for any of the deployment variables referenced in the **binding-config.xml** or any other input files |
-| method-script-ppasearch.xml | Example scripts for the PPA method |
 | method-scripts-berterniereport.xml | Example scripts for the BertErnieReport method |
 | method-scripts-berterniesearch.xml | Example scripts for the BertErnieSearch method |
+| method-scripts-kermitreport.xml | Example scripts for the KermitReport method |
+| method-scripts-kermitsearch.xml | Example scripts for the KermitSearch method |
+| method-scripts-oscarsearch.xml | Example scripts for the OscarSearch method |
 | manifest-out-binding-config.xml | Output of the manifest tool. Will be input to the ESDL engine to create and configure the binding and execute scripts (transforms) |
 
 ## Repository

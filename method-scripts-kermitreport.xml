@@ -1,5 +1,5 @@
 <es:transforms xmlns:es="urn:hpcc:esdl:script">
-  <es:transform name="BertErnieReportOutOfBand" target="soap:Body/{$query}">
+  <es:transform name="KermitReportOutOfBand" target="soap:Body/{$query}">
     <!--
     The log-as function name is the epitome of method-specific.
 
@@ -10,9 +10,9 @@
     It could be replaced in many cases by method-specific external variable or input
     definitions.
     -->
-    <es:set-value target="_LogFunctionName" value="&apos;BertErnieRpt&apos;"/>
+    <es:set-value target="_LogFunctionName" value="&apos;KertmitRpt&apos;"/>
   </es:transform>
-  <es:transform name="BertErnieReportInBand" target="soap:Body/{$query}/{$request}">
+  <es:transform name="KermitReportInBand" target="soap:Body/{$query}/{$request}">
     <!--
     This applies to only the report method, although as the original author I do know
     that the first part of the test would make transform safe to be shared with all

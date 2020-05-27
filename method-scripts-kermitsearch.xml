@@ -1,4 +1,4 @@
-<xsdl:transform name="BertErnieSearchOutOfBand" target="soap:Body/{$query}" xmlns:xsdl="urn:hpcc:esdl:script">
+<es:transform name="KermitSearchOutOfBand" target="soap:Body/{$query}" xmlns:es="urn:hpcc:esdl:script">
   <!--
   The log-as function name is the epitome of method-specific.
 
@@ -9,5 +9,5 @@
   It could be replaced in many cases by method-specific external variable or input
   definitions.
   -->
-  <xsdl:SetValue target="_LogFunctionName" value="&apos;BertErnieSrch&apos;"/>
-</xsdl:transform>
+  <es:set-value target="_LogFunctionName" value="&apos;KermitSrch&apos;"/>
+</es:transform>
