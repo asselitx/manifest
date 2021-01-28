@@ -23,21 +23,26 @@ Here is my overview of the design direction:
 
 Creates an xml config file for an ESDL service or a component of a service deployment. Currently two forms of config output are supported- the *bundle* and the *binding*. The *bundle* is a self-contained dynamic service configuration. It is suitable for configuring deployments to containerized cloud environments. The *binding* is a legacy service configuration format designed primarily for basic bare-metal deployments. 
 
-This command takes a manifest file as input. The manifest file includes options and operations to generate the output, along with template markup that dictates the general format of the output.
+This command takes a manifest file as input. The manifest file includes options and operations to generate the output, along with  markup that dictates the general format of the output.
 
 ### Manifest file
 
 The format of a manifest file is below. Future updates will add more capabilities.
 
     <em:esdl-manifest xmlns:em="urn:hpcc:esdl:manifest">
-        <em:template>
-        </em:template>
+        <em:configure> 
+            <!-- 
+                Where the boilerplate goes.
+                we could also call this element
+                'configure-input', 'input' or maybe 'boilerplate'?
+            -->
+        </em:configure> 
         <em:output write-file="1">
             <em:file path="/full/path/to/output/ws_foobar-binding.xml"/>
         </em:output>
     </em:esdl-manifest>
 
-### Bundle Template
+### Bundle Configuration
 
 This version of the tool supports generating these elements of a bundle:
 
@@ -47,9 +52,9 @@ This version of the tool supports generating these elements of a bundle:
 4. Transform scripts defined in the scope of each method
 5. ESDL interface definition of the service
 
-Organize your scripts as you see fit in a repo, then use `<include>` tags in the template to include the source of the referenced scripts in the configuration output. The format of a bundle template looks like:
+Organize your scripts as you see fit in a repo, then use `<em:include>` tags in the `<em:configure>` section to include the source of the referenced scripts in the configuration output. The format of a bundle configuration looks like:
     
-    <em:template>
+    <em:configure>
         <ESDLBundle>
             <Binding>
                 <Definition> <!-- keep as per Tim's comment re: @auth_feature? -->
@@ -73,7 +78,7 @@ Organize your scripts as you see fit in a repo, then use `<include>` tags in the
                 <em:include file="/full/path/to/ws_foobar.ecm" service="WsFooBar" searchPaths="/path/one:/path/one/two"/>
             </Definitions>
         </ESDLBundle>
-    </em:template>
+    </em:configure>
 
 #### Output
 
@@ -110,9 +115,9 @@ The generated configuration is of this form:
 
 ### Binding Template
 
-The format of a binding template is below.
+The format of a binding configuration is below.
 
-    <em:template>
+    <em:configure>
         <Binding>
             <Definition> <!-- keep as per Tim's comment re: @auth_feature? -->
                 <Methods>
@@ -131,7 +136,7 @@ The format of a binding template is below.
                 </Methods>
             </Definition>
         </Binding>
-    </em:template>
+    </em:configure>
 
 #### Configuration Output
 
@@ -160,14 +165,13 @@ The format of a binding template is below.
 
 ### Usage
 
-*Note for Tim and Tony: the `--manifest` option should actually be a required positional argument, I'll make that change with any other changes you suggest*
+*Note for Tim and Tony: the `--manifest` option should actually be a required positional argument, I'll make that change with any other changes you suggest. Also --no-cdata is removed. Some other markup or option will engage that behavior.*
 
     Usage:
     esdl build-binding [options]
 
     Options:
         --manifest <file>   Path to manifest file.
-        --no-cdata          Output binding without wrapping scripts in CDATA.
         -I | --include-path <path>
                             Search path for includes referenced in the source file. Can
                             be used multiple times.
@@ -187,8 +191,5 @@ The format of a binding template is below.
                             and all are enabled when verbose. Use an empty <flags>
                             value to disable all.
 
-To target platform versions less than version 8, use the --no-cdata flag:
 
-`esdl build-binding --no-cdata --manifest <path/to/manifest.xml>`
-
-Note that the `-I | --include-path` option is not yet implemented. All script include paths in the template must be absolute.
+Note that the `-I | --include-path` option is not yet implemented. All script include paths in the `<em:configure>` section must be absolute.
