@@ -4,13 +4,13 @@ The esdl tool aids with creating and managing ESDL-based and Dynamic ESDL servic
 
 ## Overall notes for Tim and Tony
 
-Here is my overview of the design direction:
+I'll remove this section before and if I ultimately include a README in the platform repo. Here is my overview of the design direction:
 
 1. Think of the manifest as config-as-code. The operator using the manifest to generate output shouldn't need to know which options to pass on the command line.
-2. Collapse the template file into the manifest.
-3. Think of the template as having two kinds of markup
+2. Collapse the template file into the manifest. Henceforth the word is verboten.
+3. Think of the manifest as having two kinds of markup
     1. operations- Like `<include>` which will have an associated namespace and an explicit prefix.
-    2. boilerplate- Like `<Method>` which gives structure to the output. These elements will most often use the defaut 'no prefix'.
+    2. boilerplate- Like `<Method>` which which describes the objects being configured. These elements will most often use the defaut 'no prefix'.
 4. Think of even the boilerplate parts of the manifest like a programming language- it should not mirror the output exactly, but provide a similar, simplified structure. 
     1. This isn't quite the generic 'copy-through' behavior Tim and I were envisioning, but it will simplify the boilerplate. The tightened coupling between the ESDL implementation and the tool does not offset this benefit.
     2. We can add markup in the future to get generic copy-through behavior.
@@ -113,7 +113,7 @@ The generated configuration is of this form:
     <ESDLBundle>
 
 
-### Binding Template
+### Binding Configuration
 
 The format of a binding configuration is below.
 
